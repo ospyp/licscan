@@ -1,3 +1,5 @@
+![PyPI - Downloads](https://img.shields.io/pypi/dm/licscan) ![PyPI - License](https://img.shields.io/badge/license-NOSCL_C_2.0-green)
+
 # LicScan
 
 A python package to check the licenses of your dependencies. Automate your license compliance! Fast, free, and open-sourced!
