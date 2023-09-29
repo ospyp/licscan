@@ -27,3 +27,9 @@ licscan -f requirements.txt -a MIT ISC Apache
 ## License
 
 NOSCL-C-2.0, a permissive copyleft license.
+
+---
+
+A initiative of [Open Source PYthon Packages](https://github.com/ospyp).
+
+<a href="https://github.com/ospyp"><img width="100" src="https://raw.githubusercontent.com/ospyp/ospyp/main/logo.svg"></a>
