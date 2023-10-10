@@ -57,65 +57,75 @@
 
         <input type="file" id="fileInput" accept=".txt">
         <button id="checkButton">Check Licenses</button>
-
+        <ul id="warningsList"></ul>
         <div id="result"></div>
     </div>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            const fileInput = document.getElementById("fileInput");
-            const checkButton = document.getElementById("checkButton");
-            const resultDiv = document.getElementById("result");
+    const fileInput = document.getElementById("fileInput");
+    const checkButton = document.getElementById("checkButton");
+    const warningsList = document.getElementById("warningsList"); // Add this line
+    const resultDiv = document.getElementById("result");
 
-            checkButton.addEventListener("click", function () {
-                const file = fileInput.files[0];
-                if (!file) {
-                    alert("Please select a requirements.txt file.");
-                    return;
-                }
+    checkButton.addEventListener("click", async function () { // Make the event listener asynchronous
+        const file = fileInput.files[0];
+        if (!file) {
+            alert("Please select a requirements.txt file.");
+            return;
+        }
 
-                const reader = new FileReader();
+        const reader = new FileReader();
 
-                reader.onload = async function (e) {
-                    const requirementsTxt = e.target.result;
-                    const allowedLicenses = ["NOSCL-C-2.0"];
+        reader.onload = async function (e) {
+            const requirementsTxt = e.target.result;
+            const allowedLicenses = ["MIT", "ISC", "BSD", "Apache", "Unlicense", "WTFPL", "LGPL", "BSL", "CC0", "NOSCL-C"];
 
-                    const lines = requirementsTxt.split("\n");
-                    let notOkLicenses = 0;
+            const lines = requirementsTxt.split("\n");
+            let notOkLicenses = 0;
 
-                    for (const line of lines) {
-                        // Extract the package name (without version or operators)
-                        const packageName = line.replace(/(<|>|<=|>=|==).*$/, "").trim();
+            for (const line of lines) {
+                // Extract the package name (without version or operators)
+                const packageName = line.replace(/(<|>|<=|>=|==).*$/, "").trim();
 
-                        if (packageName.length > 0) {
-                            try {
-                                const response = await fetch(`https://pypi.org/pypi/${packageName}/json`);
-                                if (response.ok) {
-                                    const data = await response.json();
-                                    const license = data.info.license;
-                                    const hasOkLicense = allowedLicenses.some((lic) => license.includes(lic));
-                                    if (!hasOkLicense) {
-                                        notOkLicenses++;
-                                        resultDiv.textContent += `WARNING: Package ${packageName} has NON-APPROVED license ${license}\n`;
-                                    }
-                                } else {
-                                    notOkLicenses++;
-                                    resultDiv.textContent += `WARNING: Unable to fetch package information for ${packageName}\n`;
-                                }
-                            } catch (error) {
+                if (packageName.length > 0) {
+                    try {
+                        const response = await fetch(`https://pypi.org/pypi/${packageName}/json`);
+                        if (response.ok) {
+                            const data = await response.json();
+                            const license = data.info.license;
+                            const hasOkLicense = allowedLicenses.some((lic) => license.includes(lic));
+                            if (!hasOkLicense) {
                                 notOkLicenses++;
-                                resultDiv.textContent += `WARNING: Error occurred for package ${packageName}: ${error.message}\n`;
+                                // Append warnings as list items
+                                const listItem = document.createElement("li");
+                                listItem.textContent = `WARNING: Package ${packageName} has NON-APPROVED license ${license}`;
+                                warningsList.appendChild(listItem);
                             }
+                        } else {
+                            notOkLicenses++;
+                            // Append warnings as list items
+                            const listItem = document.createElement("li");
+                            listItem.textContent = `WARNING: Unable to fetch package information for ${packageName}`;
+                            warningsList.appendChild(listItem);
                         }
+                    } catch (error) {
+                        notOkLicenses++;
+                        // Append warnings as list items
+                        const listItem = document.createElement("li");
+                        listItem.textContent = `WARNING: Error occurred for package ${packageName}: ${error.message}`;
+                        warningsList.appendChild(listItem);
                     }
+                }
+            }
 
-                    if (notOkLicenses === 0) {
-                        resultDiv.textContent = "SUCCESS: All good, all your packages seem to have acceptable licenses! Make sure to manually check the licenses!";
-                    }
-                };
+            if (notOkLicenses === 0) {
+                resultDiv.textContent = "SUCCESS: All good, all your packages seem to have acceptable licenses! Make sure to manually check the licenses!";
+            }
+        };
 
-                reader.readAsText(file);
-            });
-        });
+        reader.readAsText(file);
+    });
+});
 
     </script>
 
