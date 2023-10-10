@@ -1,4 +1,4 @@
-![PyPI - Downloads](https://img.shields.io/pypi/dm/licscan) ![PyPI - License](https://img.shields.io/badge/license-NOSCL_C_2.0-green)
+![PyPI - Downloads](https://img.shields.io/pypi/dm/licscan) ![PyPI - License](https://img.shields.io/badge/license-NOSCL_C_2.0-green) [![Live Demo](https://img.shields.io/badge/live-demo-blue)](https://ospyp.github.io/licscan)
 
 # LicScan
 
