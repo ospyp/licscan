@@ -6,7 +6,7 @@ A python package to check the licenses of your dependencies. Automate your licen
 
 ## [NEW] Live Demo
 
-Our NEW live demo is less accurate. [Learn more...](https://ospyp.github.io/licscan)
+Our NEW live demo is less accurate but runs on the web. [Try it out...](https://ospyp.github.io/licscan)
 
 ## Install
 
