@@ -18,7 +18,7 @@ def check_license(req, allowed_licenses):
         license = l['info']['license']
         has_ok_license = any(lic in license for lic in allowed_licenses if lic.strip())
         if not has_ok_license:
-            print(f"WARNING: Package {req.name} has NON-APPROVED license {license}")
+            print(f"WARNING: Package {req.name} has NON-APPROVED license {license[:10]}")
             return 1
     except Exception as e:
         print(f"WARNING: Unable to parse license for package {req.name}: {str(e)}")
