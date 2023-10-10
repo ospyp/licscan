@@ -57,32 +57,48 @@
 
         <input type="file" id="fileInput" accept=".txt">
         <button id="checkButton">Check Licenses</button>
+        <p>Requirements.txt</p>
+        <textarea name="" id="checkReq" cols="30" rows="10"></textarea>
+        <button id="checkButtonReq">Check Licenses</button>
         <ul id="warningsList"></ul>
         <div id="result"></div>
     </div>
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-    const fileInput = document.getElementById("fileInput");
-    const checkButton = document.getElementById("checkButton");
-    const warningsList = document.getElementById("warningsList"); // Add this line
-    const resultDiv = document.getElementById("result");
+            const fileInput = document.getElementById("fileInput");
+            const checkButton = document.getElementById("checkButton");
+            const warningsList = document.getElementById("warningsList");
+            const resultDiv = document.getElementById("result");
+            const checkTxtButton = document.getElementById("checkButtonReq");
+            const checkTxtArea = document.getElementById("checkReq");
+            checkTxtButton.addEventListener("click", async function () {
+                checkReqs(checkTxtArea.value);
+            });
 
-    checkButton.addEventListener("click", async function () { // Make the event listener asynchronous
-        const file = fileInput.files[0];
-        if (!file) {
-            alert("Please select a requirements.txt file.");
-            return;
-        }
+            checkButton.addEventListener("click", async function () { // Make the event listener asynchronous
+                const file = fileInput.files[0];
+                if (!file) {
+                    alert("Please select a requirements.txt file.");
+                    return;
+                }
 
-        const reader = new FileReader();
+                const reader = new FileReader();
 
-        reader.onload = async function (e) {
-            const requirementsTxt = e.target.result;
+                reader.onload = async function (e) {
+                    const requirementsTxt = e.target.result;
+                    checkReqs(requirementsTxt);
+                };
+
+                reader.readAsText(file);
+            });
+        });
+        async function checkReqs(requirementsTxt) {
             const allowedLicenses = ["MIT", "ISC", "BSD", "Apache", "Unlicense", "WTFPL", "LGPL", "BSL", "CC0", "NOSCL-C"];
 
             const lines = requirementsTxt.split("\n");
             let notOkLicenses = 0;
-
+            warningsList.innerHTML = '';
+            // resultDiv.innerHTML = '';
             for (const line of lines) {
                 // Extract the package name (without version or operators)
                 const packageName = line.replace(/(<|>|<=|>=|==).*$/, "").trim();
@@ -121,12 +137,8 @@
             if (notOkLicenses === 0) {
                 resultDiv.textContent = "SUCCESS: All good, all your packages seem to have acceptable licenses! Make sure to manually check the licenses!";
             }
-        };
 
-        reader.readAsText(file);
-    });
-});
-
+        }
     </script>
 
 </body>
